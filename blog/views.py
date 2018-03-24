@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 
-from main.models import Post
+from blog.models import Post
 # Create your views here.
 
 def create_post(request):
