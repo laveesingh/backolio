@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from blog.models import Post
 # Create your views here.
 
-def create_post(request):
+def post_create(request):
     body = request.POST
     title = body.get('title')
     description = body.get('description')
