@@ -4,4 +4,5 @@ from blog import views
 
 urlpatterns = [
     url(r'^post/create/', views.post_create),
+    url(r'^post/list/', views.get_posts),
 ]
