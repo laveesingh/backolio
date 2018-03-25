@@ -37,3 +37,14 @@ def get_posts(request):
     print('type:', type(posts))
     return JsonResponse({'posts': posts})
 
+
+# this can be written directly on the frontend
+def generate_cf_report(request):
+    username = request.GET.get('username')
+    url = 'http://codeforces.com/api/user.status?handle=%s' % str(username)
+    data = requests.get(url)
+    json_data = json.loads(data.text)
+    return_dict = defaultdict(int)
+    for submission in json_data['result']:
+        return_dict[submission['verdict']] += 1
+    return JsonResponse({'report': return_dict})
