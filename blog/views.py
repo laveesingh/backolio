@@ -38,6 +38,11 @@ def get_posts(request):
     return JsonResponse({'posts': posts})
 
 
+def get_post(request, pk):
+    post = serializers.serialize('json', Post.objects.filter(pk=pk))
+    return JsonResponse({'post': post})
+
+
 # this can be written directly on the frontend
 def generate_cf_report(request):
     username = request.GET.get('username')
