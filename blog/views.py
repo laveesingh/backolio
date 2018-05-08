@@ -40,6 +40,7 @@ def get_posts(request):
 
 def get_post(request, pk):
     post = serializers.serialize('json', Post.objects.filter(pk=pk))
+    post = json.loads(post)
     return JsonResponse({'post': post})
 
 
