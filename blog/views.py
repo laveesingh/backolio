@@ -10,26 +10,50 @@ from django.core import serializers
 from blog.models import Post
 # Create your views here.
 
+
 @csrf_exempt
-def post_create(request):
+def create_post(request):
     body = json.loads(request.body.decode('utf-8'))
     title = body.get('title')
     description = body.get('description')
     content = body.get('content')
-    print(title, description, content)
     flag = 0
     if not title or not description or not content:
         print("Request is missing data")
         flag = 1
     else:
         Post.objects.create(
-                title=title,
-                description=description,
-                content=content
-                )
+            title=title,
+            description=description,
+            content=content
+        )
     if not flag:
         return JsonResponse({'message': 'failure'})
     return JsonResponse({'message': 'successful'})
+
+
+@csrf_exempt
+def update_post(request):
+    body = json.loads(request.body.decode('utf-8'))
+    pk = body.get('pk')
+    title = body.get('title')
+    description = body.get('description')
+    content = body.get('content')
+    flag = 0
+    if not title or not description or not content:
+        print("Request is missing data")
+        flag = 1
+    else:
+        Post.objects.create(
+            pk=pk,
+            title=title,
+            description=description,
+            content=content
+        )
+    if not flag:
+        return JsonResponse({'message': 'failure'})
+    return JsonResponse({'message': 'successful'})
+
 
 def get_posts(request):
     posts = serializers.serialize('json', Post.objects.all())
@@ -42,6 +66,12 @@ def get_post(request, pk):
     post = serializers.serialize('json', Post.objects.filter(pk=pk))
     post = json.loads(post)
     return JsonResponse({'post': post})
+
+
+def delete_post(request, pk):
+    post = Post.objects.filter(pk=pk)
+    post.delete()
+    return JsonResponse({'message': 'successful'})
 
 
 # this can be written directly on the frontend
