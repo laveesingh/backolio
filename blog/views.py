@@ -70,17 +70,19 @@ def get_post(request, pk):
 
 def delete_post(request, pk):
     post = Post.objects.filter(pk=pk)
+    msg = None
+    status = None
     if post:
         post = post.first()
+        post.delete()
+        msg = 'successful'
+        status = 0
     else:
-        return JsonResponse({
-            'message': 'no such post exists',
-            'status': 1
-        })
-    post.delete()
+        msg = 'post with id {0} does not exist'.format(pk)
+        status = 1
     return JsonResponse({
-        'message': 'successful',
-        'status': 0
+        'message': msg,
+        'status': status
     })
 
 
