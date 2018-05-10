@@ -33,23 +33,25 @@ class Response:
 
 @csrf_exempt
 def create_post(request):
+    res = Response()
     body = json.loads(request.body.decode('utf-8'))
     title = body.get('title')
     description = body.get('description')
     content = body.get('content')
-    flag = 0
-    if not title or not description or not content:
-        print("Request is missing data")
-        flag = 1
-    else:
-        Post.objects.create(
-            title=title,
-            description=description,
-            content=content
-        )
-    if not flag:
-        return JsonResponse({'message': 'failure'})
-    return JsonResponse({'message': 'successful'})
+    if not (title and description and content):
+        res.message = 'request is missing data'
+        res.status = 1
+        return JsonResponse(res.deserialize())
+    post = Post.objects.create(
+        title=title,
+        description=description,
+        content=content
+    )
+    post = json.loads(serializers.serialize('json', Post.objects.filter(pk=post.pk)))
+    res.message = 'successful'
+    res.status = 0
+    res.data = post
+    return JsonResponse(res.deserialize())
 
 
 @csrf_exempt
