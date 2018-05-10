@@ -76,10 +76,23 @@ def update_post(request):
 
 
 def get_posts(request):
-    posts = serializers.serialize('json', Post.objects.all())
-    posts = json.loads(posts)
-    print('type:', type(posts))
-    return JsonResponse({'posts': posts})
+    res = Response()
+    queryset = Post.objects.all()
+    if not queryset:
+        res.message = 'could not find any posts, maybe the list is empty'
+        res.status = 1
+        return JsonResponse(res.deserialize())
+    try:
+        serialized_queryset = serializers.serialize('json', queryset)
+    except Exception as e:
+        print(e)
+        res.message = 'could not json serialize the queryset'
+        res.status = 1
+        return JsonResponse(res.deserialize())
+    res.message = 'successful'
+    res.status = 0
+    res.data = json.loads(serialized_queryset)
+    return JsonResponse(res.deserialize())
 
 
 def get_post(request, pk):
@@ -93,7 +106,7 @@ def get_post(request, pk):
         post = serializers.serialize('json', queryset)
     except Exception as e:
         print(e)
-        res.message = 'could not json serialize the post'
+        res.message = 'could not json serialize the queryset'
         res.status = 1
         return JsonResponse(res.deserialize())
     res.message = 'successful'
