@@ -103,14 +103,14 @@ def get_post(request, pk):
 
 
 def delete_post(request, pk):
-    post = Post.objects.filter(pk=pk)
+    queryset = Post.objects.filter(pk=pk)
     res = Response()
-    if post:
-        post = post.first()
+    if queryset:
+        post = queryset.first()
         post.delete()
         res.message = 'successful'
         res.status = 0
-        res.data = post
+        res.data = json.loads(serializers.serialize('json', queryset))[0]
     else:
         res.message = 'post with id {0} does not exist'.format(pk)
         res.status = 1
