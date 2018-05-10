@@ -90,22 +90,17 @@ def get_post(request, pk):
 
 def delete_post(request, pk):
     post = Post.objects.filter(pk=pk)
-    msg = None
-    status = None
-    data = None
+    res = Response()
     if post:
         post = post.first()
         post.delete()
-        msg = 'successful'
-        status = 0
-        data = post
+        res.message = 'successful'
+        res.status = 0
+        res.data = post
     else:
-        msg = 'post with id {0} does not exist'.format(pk)
-        status = 1
-    return JsonResponse({
-        'message': msg,
-        'status': status
-    })
+        res.message = 'post with id {0} does not exist'.format(pk)
+        res.status = 1
+    return JsonResponse(res.deserialize())
 
 
 # this can be written directly on the frontend
