@@ -83,9 +83,23 @@ def get_posts(request):
 
 
 def get_post(request, pk):
-    post = serializers.serialize('json', Post.objects.filter(pk=pk))
-    post = json.loads(post)
-    return JsonResponse({'post': post})
+    res = Response()
+    queryset = Post.objects.filter(pk=pk)
+    if not queryset:
+        res.message = 'post with id {0} does not exist'.format(pk)
+        res.status = 1
+        return JsonResponse(res.deserialize())
+    try:
+        post = serializers.serialize('json', queryset)
+    except Exception as e:
+        print(e)
+        res.message = 'could not json serialize the post'
+        res.status = 1
+        return JsonResponse(res.deserialize())
+    res.message = 'successful'
+    res.status = 0
+    res.data = json.loads(post)[0]
+    return JsonResponse(res.deserialize())
 
 
 def delete_post(request, pk):
