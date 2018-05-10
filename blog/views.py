@@ -73,9 +73,15 @@ def delete_post(request, pk):
     if post:
         post = post.first()
     else:
-        return JsonResponse({'message': 'no such post exists'})
+        return JsonResponse({
+            'message': 'no such post exists',
+            'status': 1
+        })
     post.delete()
-    return JsonResponse({'message': 'successful'})
+    return JsonResponse({
+        'message': 'successful',
+        'status': 0
+    })
 
 
 # this can be written directly on the frontend
