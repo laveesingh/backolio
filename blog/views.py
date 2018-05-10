@@ -72,11 +72,13 @@ def delete_post(request, pk):
     post = Post.objects.filter(pk=pk)
     msg = None
     status = None
+    data = None
     if post:
         post = post.first()
         post.delete()
         msg = 'successful'
         status = 0
+        data = post
     else:
         msg = 'post with id {0} does not exist'.format(pk)
         status = 1
