@@ -11,6 +11,26 @@ from blog.models import Post
 # Create your views here.
 
 
+class Response:
+
+    def __init__(self, **kwargs):
+        self.message = kwargs.get('message')
+        self.status = kwargs.get('status')
+        self.data = kwargs.get('data')
+
+    def serialize(self):
+        return self.__repr__()
+
+    def deserialize(self):
+        return self.__dict__
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return json.dumps(self.__dict__)
+
+
 @csrf_exempt
 def create_post(request):
     body = json.loads(request.body.decode('utf-8'))
